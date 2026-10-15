@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<title>Skema Turnamen Acak</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 15px;
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 750px;
+  margin: auto;
+}
+
+h2, h3 {
+  margin-top: 0;
+}
+
+.card {
+  background: #1c1c1c;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background: #292929;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 11px 14px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background: #292929;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 3px;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.primary {
+  background: #087cf0;
+  border-color: #087cf0;
+}
+
+.success {
+  background: #087d48;
+  border-color: #087d48;
+}
+
+.danger {
+  background: #a52727;
+  border-color: #a52727;
+}
+
+.muted {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  background: #252525;
+  padding: 9px;
+  border-radius: 8px;
+  margin-top: 7px;
+}
+
+.entry span {
+  overflow-wrap: anywhere;
+}
+
+#message {
+  margin: 10px 0;
+  color: #7db7ff;
+  font-size: 13px;
+}
+
+.round {
+  border-left: 3px solid #087cf0;
+  padding-left: 12px;
+  margin-bottom: 25px;
+}
+
+.match {
+  background: #1c1c1c;
+  border: 1px solid #383838;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 12px 0;
+}
+
+.player {
+  width: 100%;
+  display: block;
+  margin: 7px 0;
+  text-align: left;
+  background: #292929;
+  overflow-wrap: anywhere;
+}
+
+.player.winner {
+  border: 2px solid #20b875;
+  background: #153426;
+}
+
+.player.loser {
+  text-decoration: line-through;
+  opacity: .45;
+}
+
+.player.deleted {
+  text-decoration: line-through;
+  opacity: .3;
+}
+
+.badge {
+  display: block;
+  color: #aaa;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.menu {
+  background: #101010;
+  border: 1px solid #444;
+  border-radius: 9px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.vs {
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+}
+
+.champion {
+  border: 2px solid #20b875;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  background: #153426;
+  margin: 15px 0;
+}
+
+.hidden {
+  display: none !important;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="card">
+    <h2>🏆 SKEMA BY EEN</h2>
+    <p class="muted">
+      Tambahkan nama pemain satu per satu, lalu buat skema pertandingan secara acak.
+    </p>
+
+    <form id="nameForm">
+      <input
+        id="playerName"
+        type="text"
+        placeholder="Masukkan nama pemain..."
+        maxlength="60"
+        autocomplete="off"
+        required
+      >
+      <button class="primary" type="submit">+ Tambah Nama</button>
+    </form>
+
+    <div id="message" aria-live="polite"></div>
+
+    <hr style="border-color:#333;margin:15px 0">
+
+    <h3>Daftar Pemain (<span id="count">0</span>)</h3>
+    <div id="playerList">
+      <p class="muted">Belum ada nama pemain.</p>
+    </div>
+
+    <div style="margin-top:15px">
+      <button class="primary" id="generate">🎲 Acak & Buat Skema</button>
+      <button id="clearNames">Hapus Semua Nama</button>
+    </div>
+  </div>
+
+  <div id="tournament">
+    <div class="card muted">
+      Skema pertandingan akan tampil di sini.
+    </div>
+  </div>
+
+  <div id="controls" class="hidden">
+    <button id="shuffleAgain">↻ Acak Ulang</button>
+    <button id="undo">↶ Batalkan Hasil</button>
+  </div>
+
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+
+  let names = [];
+  let rounds = [];
+  let nextId = 1;
+  let selected = null;
+  let history = [];
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function makePlayer(name) {
+    return { id: nextId++, name };
+  }
+
+  function makeRound(players, number) {
+    const matches = [];
+
+    for (let i = 0; i < players.length; i += 2) {
+      matches.push({
+        id: nextId++,
+        a: players[i],
+        b: players[i + 1] || null,
+        winner: players[i + 1] ? null : players[i],
+        deleted: [],
+        bye: !players[i + 1]
+      });
+    }
+
+    return { number, matches };
+  }
+
+  function saveHistory() {
+    history.push(JSON.stringify({
+      rounds,
+      selected
+    }));
+
+    if (history.length > 50) {
+      history.shift();
+    }
+  }
+
+  function isDeleted(match, player) {
+    return match.deleted.includes(player.id);
+  }
+
+  function advanceRounds() {
+    while (rounds.length) {
+      const current = rounds[rounds.length - 1];
+
+      const unfinished = current.matches.some(match =>
+        !match.winner &&
+        !(match.a && match.b &&
+          isDeleted(match, match.a) &&
+          isDeleted(match, match.b))
+      );
+
+      if (unfinished) break;
+
+      const winners = current.matches
+        .map(match => match.winner)
+        .filter(Boolean);
+
+      if (winners.length <= 1) break;
+      if (rounds.length >= 12) break;
+
+      rounds.push(makeRound(winners, rounds.length + 1));
+    }
+  }
+
+  function buildTournament() {
+    rounds = [];
+    history = [];
+    selected = null;
+    nextId = 1;
+
+    const players = shuffle(names.map(makePlayer));
+
+    rounds.push(makeRound(players, 1));
+    advanceRounds();
+    renderTournament();
+  }
+
+  function findMatch() {
+    for (const round of rounds) {
+      for (const match of round.matches) {
+        if (match.id === selected?.matchId) {
+          return match;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function chooseWinner() {
+    const match = findMatch();
+    if (!match || !selected || match.winner) return;
+
+    const player = [match.a, match.b].find(
+      p => p && p.id === selected.playerId
+    );
+
+    if (!player || isDeleted(match, player)) return;
+
+    saveHistory();
+
+    match.winner = player;
+    selected = null;
+
+    advanceRounds();
+    renderTournament();
+  }
+
+  function deletePlayer() {
+    const match = findMatch();
+    if (!match || !selected || match.winner) return;
+
+    const player = [match.a, match.b].find(
+      p => p && p.id === selected.playerId
+    );
+
+    if (!player || isDeleted(match, player)) return;
+
+    saveHistory();
+    match.deleted.push(player.id);
+
+    if (match.bye) {
+      match.winner = null;
+    }
+
+    selected = null;
+    advanceRounds();
+    renderTournament();
+  }
+
+  function undo() {
+    if (!history.length) {
+      $('message').textContent = 'Belum ada hasil untuk dibatalkan.';
+      return;
+    }
+
+    const previous = JSON.parse(history.pop());
+
+    rounds = previous.rounds;
+    selected = previous.selected;
+
+    renderTournament();
+  }
+
+  function renderNames() {
+    const list = $('playerList');
+    list.innerHTML = '';
+    $('count').textContent = names.length;
+
+    if (!names.length) {
+      list.innerHTML =
+        '<p class="muted">Belum ada nama pemain.</p>';
+      return;
+    }
+
+    names.forEach((name, index) => {
+      const row = document.createElement('div');
+      row.className = 'entry';
+
+      const label = document.createElement('span');
+      label.textContent = (index + 1) + '. ' + name;
+
+      const remove = document.createElement('button');
+      remove.textContent = 'Hapus';
+      remove.className = 'danger';
+
+      remove.onclick = () => {
+        names.splice(index, 1);
+        renderNames();
+        $('message').textContent = 'Nama berhasil dihapus.';
+      };
+
+      row.append(label, remove);
+      list.appendChild(row);
+    });
+  }
+
+  function renderTournament() {
+    const host = $('tournament');
+    host.innerHTML = '';
+
+    $('controls').classList.toggle('hidden', !rounds.length);
+
+    if (!rounds.length) {
+      host.innerHTML =
+        '<div class="card muted">Belum ada skema pertandingan.</div>';
+      return;
+    }
+
+    const summary = document.createElement('div');
+    summary.className = 'card';
+
+    const title = document.createElement('h3');
+    title.textContent = '📋 Bagan Pertandingan';
+
+    const info = document.createElement('p');
+    info.className = 'muted';
+    info.textContent =
+      names.length + ' pemain · ' + rounds.length + ' babak';
+
+    summary.append(title, info);
+    host.appendChild(summary);
+
+    rounds.forEach((round, roundIndex) => {
+      const section = document.createElement('section');
+      section.className = 'round';
+
+      const heading = document.createElement('h3');
+      heading.textContent =
+        'Babak ' + round.number +
+        (roundIndex === rounds.length - 1 &&
+         round.matches.length === 1 ? ' · FINAL' : '');
+
+      section.appendChild(heading);
+
+      round.matches.forEach((match, matchIndex) => {
+        const card = document.createElement('div');
+        card.className = 'match';
+
+        const label = document.createElement('div');
+        label.className = 'muted';
+        label.textContent =
+          'Pertandingan ' + (matchIndex + 1) +
+          (match.bye ? ' · Lolos otomatis' : '');
+
+        card.appendChild(label);
+
+        function addPlayer(player) {
+          if (!player) return;
+
+          const button = document.createElement('button');
+          button.className = 'player';
+
+          if (match.winner?.id === player.id) {
+            button.classList.add('winner');
+          } else if (match.winner) {
+            button.classList.add('loser');
+          }
+
+          if (isDeleted(match, player)) {
+            button.classList.add('deleted');
+          }
+
+          button.appendChild(document.createTextNode(player.name));
+
+          const badge = document.createElement('span');
+          badge.className = 'badge';
+
+          if (isDeleted(match, player)) {
+            badge.textContent = 'DIHAPUS';
+          } else if (match.winner?.id === player.id) {
+            badge.textContent = '✓ MENANG';
+          } else if (match.winner) {
+            badge.textContent = 'KALAH';
+          } else if (match.bye) {
+            badge.textContent = 'LOLOS OTOMATIS';
+          } else {
+            badge.textContent = 'Tekan untuk memilih';
+          }
+
+          button.appendChild(badge);
+
+          button.disabled =
+            !!match.winner ||
+            isDeleted(match, player) ||
+            match.bye;
+
+          button.onclick = () => {
+            selected = {
+              matchId: match.id,
+              playerId: player.id
+            };
+            renderTournament();
+          };
+
+          card.appendChild(button);
+        }
+
+        addPlayer(match.a);
+
+        if (match.b) {
+          const vs = document.createElement('div');
+          vs.className = 'vs';
+          vs.textContent = 'VS';
+          card.appendChild(vs);
+
+          addPlayer(match.b);
+        }
+
+        if (match.winner) {
+          const result = document.createElement('p');
+          result.className = 'badge';
+          result.textContent = 'Pemenang: ' + match.winner.name;
+          card.appendChild(result);
+        }
+
+        if (selected?.matchId === match.id) {
+          const player = [match.a, match.b].find(
+            p => p && p.id === selected.playerId
+          );
+
+          if (player && !match.winner && !isDeleted(match, player)) {
+            const menu = document.createElement('div');
+            menu.className = 'menu';
+
+            const heading = document.createElement('strong');
+            heading.textContent = 'Aksi: ' + player.name;
+            menu.appendChild(heading);
+
+            const win = document.createElement('button');
+            win.textContent = '🏆 Menang';
+            win.className = 'success';
+            win.onclick = chooseWinner;
+
+            const remove = document.createElement('button');
+            remove.textContent = '✕ Hapus';
+            remove.className = 'danger';
+            remove.onclick = deletePlayer;
+
+            const cancel = document.createElement('button');
+            cancel.textContent = 'Batal';
+            cancel.onclick = () => {
+              selected = null;
+              renderTournament();
+            };
+
+            menu.append(win, remove, cancel);
+            card.appendChild(menu);
+          }
+        }
+
+        section.appendChild(card);
+      });
+
+      host.appendChild(section);
+    });
+
+    const lastRound = rounds[rounds.length - 1];
+
+    if (
+      lastRound.matches.length === 1 &&
+      lastRound.matches[0].winner
+    ) {
+      const champion = document.createElement('div');
+      champion.className = 'champion';
+
+      const trophy = document.createElement('div');
+      trophy.style.fontSize = '32px';
+      trophy.textContent = '🏆';
+
+      const heading = document.createElement('h3');
+      heading.textContent = 'JUARA TURNAMEN';
+
+      const name = document.createElement('h2');
+      name.textContent = lastRound.matches[0].winner.name;
+
+      champion.append(trophy, heading, name);
+      host.appendChild(champion);
+    }
+  }
+
+  $('nameForm').addEventListener('submit', event => {
+    event.preventDefault();
+
+    const input = $('playerName');
+    const name = input.value.trim();
+
+    if (!name) {
+      $('message').textContent = 'Masukkan nama pemain terlebih dahulu.';
+      return;
+    }
+
+    if (names.some(n => n.toLowerCase() === name.toLowerCase())) {
+      $('message').textContent = 'Nama tersebut sudah ada.';
+      return;
+    }
+
+    if (names.length >= 128) {
+      $('message').textContent = 'Maksimal 128 pemain.';
+      return;
+    }
+
+    names.push(name);
+    input.value = '';
+
+    renderNames();
+
+    $('message').textContent = name + ' berhasil ditambahkan.';
+    input.focus();
+  });
+
+  $('generate').onclick = () => {
+    if (names.length < 2) {
+      $('message').textContent =
+        'Tambahkan minimal 2 pemain terlebih dahulu.';
+      return;
+    }
+
+    buildTournament();
+    $('message').textContent = 'Skema berhasil diacak!';
+  };
+
+  $('clearNames').onclick = () => {
+    if (!confirm('Hapus semua nama dan skema pertandingan?')) return;
+
+    names = [];
+    rounds = [];
+    selected = null;
+    history = [];
+
+    renderNames();
+    renderTournament();
+
+    $('message').textContent = 'Semua nama telah dihapus.';
+  };
+
+  $('shuffleAgain').onclick = () => {
+    if (names.length < 2) return;
+
+    buildTournament();
+    $('message').textContent = 'Skema berhasil diacak ulang.';
+  };
+
+  $('undo').onclick = undo;
+
+  renderNames();
+  renderTournament();
+})();
+</script>
+</body>
+</html>
