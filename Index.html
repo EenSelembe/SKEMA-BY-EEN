@@ -7,234 +7,116 @@
 <title>Skema Turnamen Acak</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 15px;
-  background: #111;
-  color: #fff;
-  font-family: Arial, sans-serif;
-}
-
-.container {
-  max-width: 750px;
-  margin: auto;
-}
-
-h2, h3 {
-  margin-top: 0;
-}
-
-.card {
-  background: #1c1c1c;
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 15px;
-}
-
-input {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  background: #292929;
-  color: white;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-button {
-  padding: 11px 14px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  background: #292929;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  margin: 3px;
-}
-
-button:disabled {
-  cursor: default;
-}
-
-.primary {
-  background: #087cf0;
-  border-color: #087cf0;
-}
-
-.success {
-  background: #087d48;
-  border-color: #087d48;
-}
-
-.danger {
-  background: #a52727;
-  border-color: #a52727;
-}
-
-.muted {
-  color: #aaa;
-  font-size: 13px;
-}
-
-.entry {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  background: #252525;
-  padding: 9px;
-  border-radius: 8px;
-  margin-top: 7px;
-}
-
-.entry span {
-  overflow-wrap: anywhere;
-}
-
-#message {
-  margin: 10px 0;
-  color: #7db7ff;
-  font-size: 13px;
-}
-
-.round {
-  border-left: 3px solid #087cf0;
-  padding-left: 12px;
-  margin-bottom: 25px;
-}
-
-.match {
-  background: #1c1c1c;
-  border: 1px solid #383838;
-  border-radius: 10px;
-  padding: 12px;
-  margin: 12px 0;
-}
-
-.player {
-  width: 100%;
-  display: block;
-  margin: 7px 0;
-  text-align: left;
-  background: #292929;
-  overflow-wrap: anywhere;
-}
-
-.player.winner {
-  border: 2px solid #20b875;
-  background: #153426;
-}
-
-.player.loser {
-  text-decoration: line-through;
-  opacity: .45;
-}
-
-.player.deleted {
-  text-decoration: line-through;
-  opacity: .3;
-}
-
-.badge {
-  display: block;
-  color: #aaa;
-  font-size: 11px;
-  margin-top: 5px;
-}
-
-.menu {
-  background: #101010;
-  border: 1px solid #444;
-  border-radius: 9px;
-  padding: 10px;
-  margin-top: 10px;
-}
-
-.vs {
-  text-align: center;
-  color: #888;
-  font-size: 12px;
-}
-
-.champion {
-  border: 2px solid #20b875;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  background: #153426;
-  margin: 15px 0;
-}
-
-.hidden {
-  display: none !important;
-}
+*{box-sizing:border-box}
+body{margin:0;padding:15px;background:#111;color:#fff;font-family:Arial,sans-serif}
+.container{max-width:750px;margin:auto}
+.card{background:#1c1c1c;border:1px solid #333;border-radius:12px;padding:15px;margin-bottom:15px}
+input{width:100%;padding:13px;border:1px solid #444;border-radius:8px;background:#292929;color:white;font-size:16px;margin-bottom:10px}
+button{padding:11px 14px;border:1px solid #444;border-radius:8px;background:#292929;color:white;font-weight:bold;cursor:pointer;margin:3px}
+button:disabled{cursor:default}
+.primary{background:#087cf0;border-color:#087cf0}
+.success{background:#087d48;border-color:#087d48}
+.danger{background:#a52727;border-color:#a52727}
+.muted{color:#aaa;font-size:13px}
+#message{margin:10px 0;color:#7db7ff;font-size:13px}
+.round{border-left:3px solid #087cf0;padding-left:12px;margin-bottom:25px}
+.match{background:#1c1c1c;border:1px solid #383838;border-radius:10px;padding:12px;margin:12px 0}
+.player{width:100%;display:block;margin:7px 0;text-align:left;background:#292929;overflow-wrap:anywhere}
+.player.winner{border:2px solid #20b875;background:#153426}
+.player.loser{text-decoration:line-through;opacity:.45}
+.player.deleted{text-decoration:line-through;opacity:.3}
+.badge{display:block;color:#aaa;font-size:11px;margin-top:5px}
+.menu{background:#101010;border:1px solid #444;border-radius:9px;padding:10px;margin-top:10px}
+.vs{text-align:center;color:#888;font-size:12px}
+.champion{border:2px solid #20b875;border-radius:12px;padding:20px;text-align:center;background:#153426;margin:15px 0}
+.entry{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#252525;padding:9px;border-radius:8px;margin-top:7px}
+.entry span{overflow-wrap:anywhere}
+.hidden{display:none!important}
+.saved{color:#57d99a;font-size:12px}
 </style>
 </head>
-
 <body>
 <div class="container">
 
-  <div class="card">
-    <h2>🏆 SKEMA BY EEN</h2>
-    <p class="muted">
-      Tambahkan nama pemain satu per satu, lalu buat skema pertandingan secara acak.
-    </p>
+<div class="card">
+<h2>🏆 SKEMA BY EEN</h2>
+<p class="muted">Data disimpan otomatis. Refresh halaman tidak menghapus data.</p>
+<div id="saveStatus" class="saved">● Penyimpanan otomatis aktif</div>
 
-    <form id="nameForm">
-      <input
-        id="playerName"
-        type="text"
-        placeholder="Masukkan nama pemain..."
-        maxlength="60"
-        autocomplete="off"
-        required
-      >
-      <button class="primary" type="submit">+ Tambah Nama</button>
-    </form>
+<form id="nameForm">
+<input id="playerName" type="text" placeholder="Masukkan nama pemain..." maxlength="60" autocomplete="off" required>
+<button class="primary" type="submit">+ Tambah Nama</button>
+</form>
 
-    <div id="message" aria-live="polite"></div>
+<div id="message" aria-live="polite"></div>
+<hr style="border-color:#333;margin:15px 0">
 
-    <hr style="border-color:#333;margin:15px 0">
+<h3>Daftar Pemain (<span id="count">0</span>)</h3>
+<div id="playerList"><p class="muted">Belum ada nama pemain.</p></div>
 
-    <h3>Daftar Pemain (<span id="count">0</span>)</h3>
-    <div id="playerList">
-      <p class="muted">Belum ada nama pemain.</p>
-    </div>
+<div style="margin-top:15px">
+<button class="primary" id="generate" type="button">🎲 Acak & Buat Skema</button>
+<button id="clearNames" type="button">Hapus Semua</button>
+</div>
+</div>
 
-    <div style="margin-top:15px">
-      <button class="primary" id="generate">🎲 Acak & Buat Skema</button>
-      <button id="clearNames">Hapus Semua Nama</button>
-    </div>
-  </div>
+<div id="tournament">
+<div class="card muted">Skema pertandingan akan tampil di sini.</div>
+</div>
 
-  <div id="tournament">
-    <div class="card muted">
-      Skema pertandingan akan tampil di sini.
-    </div>
-  </div>
-
-  <div id="controls" class="hidden">
-    <button id="shuffleAgain">↻ Acak Ulang</button>
-    <button id="undo">↶ Batalkan Hasil</button>
-  </div>
+<div id="controls" class="hidden">
+<button id="shuffleAgain" type="button">↻ Acak Ulang</button>
+<button id="undo" type="button">↶ Batalkan Hasil</button>
+</div>
 
 </div>
 
 <script>
 (() => {
   const $ = id => document.getElementById(id);
+  const STORAGE_KEY = 'skemaTurnamenAcak_v2';
 
   let names = [];
   let rounds = [];
   let nextId = 1;
   let selected = null;
   let history = [];
+
+  function saveData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        names, rounds, nextId, selected, history
+      }));
+      $('saveStatus').textContent = '● Data berhasil disimpan otomatis';
+      $('saveStatus').style.color = '#57d99a';
+    } catch (error) {
+      $('saveStatus').textContent = 'Gagal menyimpan. Periksa penyimpanan browser.';
+      $('saveStatus').style.color = '#ff7777';
+    }
+  }
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+
+      const data = JSON.parse(raw);
+
+      if (!data || !Array.isArray(data.names) ||
+          !Array.isArray(data.rounds)) return false;
+
+      names = data.names;
+      rounds = data.rounds;
+      nextId = Number.isInteger(data.nextId) ? data.nextId : 1;
+      selected = data.selected || null;
+      history = Array.isArray(data.history) ? data.history : [];
+
+      return true;
+    } catch (error) {
+      $('message').textContent = 'Data tersimpan tidak dapat dibaca.';
+      return false;
+    }
+  }
 
   function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -267,13 +149,10 @@ button:disabled {
 
   function saveHistory() {
     history.push(JSON.stringify({
-      rounds,
-      selected
+      rounds, selected
     }));
 
-    if (history.length > 50) {
-      history.shift();
-    }
+    if (history.length > 50) history.shift();
   }
 
   function isDeleted(match, player) {
@@ -310,22 +189,18 @@ button:disabled {
     selected = null;
     nextId = 1;
 
-    const players = shuffle(names.map(makePlayer));
-
-    rounds.push(makeRound(players, 1));
+    rounds.push(makeRound(shuffle(names.map(makePlayer)), 1));
     advanceRounds();
     renderTournament();
+    saveData();
   }
 
   function findMatch() {
     for (const round of rounds) {
       for (const match of round.matches) {
-        if (match.id === selected?.matchId) {
-          return match;
-        }
+        if (match.id === selected?.matchId) return match;
       }
     }
-
     return null;
   }
 
@@ -340,12 +215,12 @@ button:disabled {
     if (!player || isDeleted(match, player)) return;
 
     saveHistory();
-
     match.winner = player;
     selected = null;
 
     advanceRounds();
     renderTournament();
+    saveData();
   }
 
   function deletePlayer() {
@@ -361,13 +236,12 @@ button:disabled {
     saveHistory();
     match.deleted.push(player.id);
 
-    if (match.bye) {
-      match.winner = null;
-    }
+    if (match.bye) match.winner = null;
 
     selected = null;
     advanceRounds();
     renderTournament();
+    saveData();
   }
 
   function undo() {
@@ -377,11 +251,11 @@ button:disabled {
     }
 
     const previous = JSON.parse(history.pop());
-
     rounds = previous.rounds;
     selected = previous.selected;
 
     renderTournament();
+    saveData();
   }
 
   function renderNames() {
@@ -390,8 +264,7 @@ button:disabled {
     $('count').textContent = names.length;
 
     if (!names.length) {
-      list.innerHTML =
-        '<p class="muted">Belum ada nama pemain.</p>';
+      list.innerHTML = '<p class="muted">Belum ada nama pemain.</p>';
       return;
     }
 
@@ -405,11 +278,13 @@ button:disabled {
       const remove = document.createElement('button');
       remove.textContent = 'Hapus';
       remove.className = 'danger';
+      remove.type = 'button';
 
       remove.onclick = () => {
         names.splice(index, 1);
         renderNames();
-        $('message').textContent = 'Nama berhasil dihapus.';
+        saveData();
+        $('message').textContent = 'Nama dihapus dari daftar.';
       };
 
       row.append(label, remove);
@@ -420,12 +295,10 @@ button:disabled {
   function renderTournament() {
     const host = $('tournament');
     host.innerHTML = '';
-
     $('controls').classList.toggle('hidden', !rounds.length);
 
     if (!rounds.length) {
-      host.innerHTML =
-        '<div class="card muted">Belum ada skema pertandingan.</div>';
+      host.innerHTML = '<div class="card muted">Belum ada skema pertandingan.</div>';
       return;
     }
 
@@ -437,8 +310,7 @@ button:disabled {
 
     const info = document.createElement('p');
     info.className = 'muted';
-    info.textContent =
-      names.length + ' pemain · ' + rounds.length + ' babak';
+    info.textContent = names.length + ' pemain · ' + rounds.length + ' babak';
 
     summary.append(title, info);
     host.appendChild(summary);
@@ -448,8 +320,7 @@ button:disabled {
       section.className = 'round';
 
       const heading = document.createElement('h3');
-      heading.textContent =
-        'Babak ' + round.number +
+      heading.textContent = 'Babak ' + round.number +
         (roundIndex === rounds.length - 1 &&
          round.matches.length === 1 ? ' · FINAL' : '');
 
@@ -461,16 +332,15 @@ button:disabled {
 
         const label = document.createElement('div');
         label.className = 'muted';
-        label.textContent =
-          'Pertandingan ' + (matchIndex + 1) +
+        label.textContent = 'Pertandingan ' + (matchIndex + 1) +
           (match.bye ? ' · Lolos otomatis' : '');
-
         card.appendChild(label);
 
         function addPlayer(player) {
           if (!player) return;
 
           const button = document.createElement('button');
+          button.type = 'button';
           button.className = 'player';
 
           if (match.winner?.id === player.id) {
@@ -502,10 +372,8 @@ button:disabled {
 
           button.appendChild(badge);
 
-          button.disabled =
-            !!match.winner ||
-            isDeleted(match, player) ||
-            match.bye;
+          button.disabled = !!match.winner ||
+            isDeleted(match, player) || match.bye;
 
           button.onclick = () => {
             selected = {
@@ -513,6 +381,7 @@ button:disabled {
               playerId: player.id
             };
             renderTournament();
+            saveData();
           };
 
           card.appendChild(button);
@@ -525,7 +394,6 @@ button:disabled {
           vs.className = 'vs';
           vs.textContent = 'VS';
           card.appendChild(vs);
-
           addPlayer(match.b);
         }
 
@@ -547,26 +415,29 @@ button:disabled {
 
             const heading = document.createElement('strong');
             heading.textContent = 'Aksi: ' + player.name;
-            menu.appendChild(heading);
 
             const win = document.createElement('button');
+            win.type = 'button';
             win.textContent = '🏆 Menang';
             win.className = 'success';
             win.onclick = chooseWinner;
 
             const remove = document.createElement('button');
+            remove.type = 'button';
             remove.textContent = '✕ Hapus';
             remove.className = 'danger';
             remove.onclick = deletePlayer;
 
             const cancel = document.createElement('button');
+            cancel.type = 'button';
             cancel.textContent = 'Batal';
             cancel.onclick = () => {
               selected = null;
               renderTournament();
+              saveData();
             };
 
-            menu.append(win, remove, cancel);
+            menu.append(heading, document.createElement('br'), win, remove, cancel);
             card.appendChild(menu);
           }
         }
@@ -579,10 +450,7 @@ button:disabled {
 
     const lastRound = rounds[rounds.length - 1];
 
-    if (
-      lastRound.matches.length === 1 &&
-      lastRound.matches[0].winner
-    ) {
+    if (lastRound.matches.length === 1 && lastRound.matches[0].winner) {
       const champion = document.createElement('div');
       champion.className = 'champion';
 
@@ -626,6 +494,7 @@ button:disabled {
     input.value = '';
 
     renderNames();
+    saveData();
 
     $('message').textContent = name + ' berhasil ditambahkan.';
     input.focus();
@@ -633,8 +502,7 @@ button:disabled {
 
   $('generate').onclick = () => {
     if (names.length < 2) {
-      $('message').textContent =
-        'Tambahkan minimal 2 pemain terlebih dahulu.';
+      $('message').textContent = 'Tambahkan minimal 2 pemain terlebih dahulu.';
       return;
     }
 
@@ -652,8 +520,9 @@ button:disabled {
 
     renderNames();
     renderTournament();
+    saveData();
 
-    $('message').textContent = 'Semua nama telah dihapus.';
+    $('message').textContent = 'Semua nama dan skema telah dihapus.';
   };
 
   $('shuffleAgain').onclick = () => {
@@ -665,6 +534,8 @@ button:disabled {
 
   $('undo').onclick = undo;
 
+  // Pulihkan data otomatis saat halaman dibuka atau di-refresh.
+  loadData();
   renderNames();
   renderTournament();
 })();
